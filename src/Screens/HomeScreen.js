@@ -5,7 +5,7 @@ import {
   FlatList,
   StyleSheet,
   Text,
-  SafeAreaView,
+  View,
   ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
@@ -67,34 +67,38 @@ const HomeScreen = () => {
     fetchData();
   };
 
-  console.log(images, 'kkkl');
-
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FlatList
         data={images}
         renderItem={renderItem}
-        keyExtractor={(item, index) => item.id.toString() + index.toString()}
-        // onEndReached={handleLoadMore}
+        keyExtractor={item => item.id.toString()}
+        onEndReached={handleLoadMore}
         onEndReachedThreshold={0.1}
       />
       {loading && (
         <ActivityIndicator size="large" color="blue" style={styles.loader} />
       )}
       {!loading && (
-        <TouchableOpacity
-          style={styles.loadMoreButton}
-          onPress={handleLoadMore}>
-          <Text style={styles.loadMoreButtonText}>Click here to load more</Text>
-        </TouchableOpacity>
+        <View style={styles.ph24}>
+          <TouchableOpacity
+            style={styles.loadMoreButton}
+            onPress={handleLoadMore}>
+            <Text style={styles.loadMoreButtonText}>
+              Click here to load more
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 50,
+    marginBottom: 25,
   },
   image: {
     width: '100%',
@@ -103,8 +107,13 @@ const styles = StyleSheet.create({
   },
   loadMoreButton: {
     padding: 10,
-    backgroundColor: 'blue',
+    marginTop: 15,
+    backgroundColor: '#6083C2',
     alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  ph24: {
+    paddingHorizontal: 24,
   },
   loadMoreButtonText: {
     color: 'white',
