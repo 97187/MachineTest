@@ -26,16 +26,17 @@ const HomeScreen = () => {
       data.append('offset', String(offset));
       data.append('type', 'popular');
 
-      const response = await axios.post(
-        'https://dev3.xicom.us/xttest/getdata.php',
-        data,
-      );
-      const result = response.data;
-      if (result.status === 'success') {
-        const uniqueImages = result.images.filter(newImage => {
+      const response = await fetch('https://dev3.xicom.us/xttest/getdata.php', {
+        method: 'POST',
+        body: data,
+      });
+
+      const responseJson = await response.json();
+
+      if (responseJson.status === 'success') {
+        const uniqueImages = responseJson.images.filter(newImage => {
           return !images.some(prevImage => prevImage.id === newImage.id);
         });
-
         setImages(prevImages => [...prevImages, ...uniqueImages]);
         setOffset(offset + 1);
       } else {
@@ -46,8 +47,7 @@ const HomeScreen = () => {
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset]);
+  }, [offset, images, setImages, setOffset, setLoading]);
 
   useEffect(() => {
     fetchData();

@@ -9,7 +9,6 @@ import {
 import React from 'react';
 import {Formik} from 'formik';
 import * as yup from 'yup';
-import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import InputField from '../Components/InputField';
 import {isSmallScreen} from '../theme';
@@ -33,27 +32,22 @@ const DetailScreen = ({route}) => {
   const handleSubmit = async values => {
     try {
       const data = new FormData();
-      const response = await axios.get(item.xt_image, {
-        responseType: 'blob',
-      });
-      const getUploadedImage = response.data;
-
       data.append('first_name', values.firstName);
       data.append('last_name', values.lastName);
       data.append('email', values.email);
       data.append('phone', values.phone);
       data.append('user_image', {
         uri: item.xt_image,
-        type: getUploadedImage.data.type,
-        name: getUploadedImage.data.name,
+        type: 'image/jpeg',
+        name: 'uploaded image',
       });
 
-      const res = await axios.post(
-        'http://dev3.xicom.us/xttest/savedata.php',
-        data,
-      );
-
-      if (res.data.status === 'success') {
+      const response = await fetch('http://dev3.xicom.us/xttest/savedata.php', {
+        method: 'POST',
+        body: data,
+      });
+      const responseJson = await response.json();
+      if (responseJson.status === 'success') {
         Toast.show({
           type: 'success',
           text1: 'Upload Successful',
